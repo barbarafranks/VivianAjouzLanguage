@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vivian Ajouz — Language G3.5 Prep</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f4f0; min-height: 100vh; }
+.header { background: #fff; border-bottom: 1px solid #e2e2e2; padding: 14px 24px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 10; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; background: #534AB7; color: #fff; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.header-info { flex: 1; }
+.header-name { font-weight: 700; font-size: 15px; color: #1a1a2e; }
+.header-sub { font-size: 12px; color: #777; }
+.progress-wrap { flex: 2; max-width: 360px; }
+.progress-label { font-size: 11px; color: #555; margin-bottom: 4px; text-align: right; }
+.progress-bar { height: 7px; background: #e5e3f7; border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: #534AB7; border-radius: 99px; transition: width 0.4s ease; }
+.main { max-width: 760px; margin: 0 auto; padding: 28px 20px 80px; }
+.badge-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.skill-badge { display: inline-flex; align-items: center; padding: 5px 14px; border-radius: 99px; font-size: 12px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; }
+.maps-tag { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; background: #f0f0f0; color: #555; }
+.q-card { background: #fff; border-radius: 14px; padding: 26px 26px 22px; box-shadow: 0 1px 6px rgba(0,0,0,.07); }
+.passage-label { font-size: 10px; font-weight: 800; color: #888; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 6px; }
+.passage-box { background: #fafaf9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 13px 16px; margin-bottom: 16px; font-size: 14px; color: #333; line-height: 1.75; }
+.q-text { font-size: 15px; font-weight: 700; color: #1a1a2e; line-height: 1.6; margin-bottom: 16px; }
+.q-ul { text-decoration: underline; text-underline-offset: 3px; }
+.tip-box { background: #E6F1FB; border-left: 4px solid #185FA5; border-radius: 6px; padding: 11px 14px; margin-bottom: 16px; }
+.tip-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.tip-label { font-size: 10px; font-weight: 800; color: #0C447C; letter-spacing: .07em; text-transform: uppercase; }
+.hint-btn { display: none; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: #185FA5; background: none; border: 1px solid #185FA5; border-radius: 5px; padding: 3px 8px; cursor: pointer; }
+.hint-btn.visible { display: flex; }
+.tip-text { font-size: 13px; color: #0C447C; line-height: 1.5; }
+.hint-reveal { display: none; font-size: 13px; color: #0C447C; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #aac8e8; line-height: 1.5; }
+.hint-reveal.open { display: block; }
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt { display: flex; align-items: flex-start; gap: 13px; padding: 12px 15px; border: 2px solid #e2e2e2; border-radius: 10px; cursor: pointer; transition: all .15s; background: #fff; }
+.opt:hover:not(.disabled) { border-color: #b0a8f0; background: #f7f6fe; }
+.opt.selected { border-color: #534AB7; background: #EEEDFE; }
+.opt.correct { border-color: #1D9E75; background: #EAF3DE; cursor: default; }
+.opt.wrong-tried { border-color: #E24B4A; background: #FCEBEB; opacity: .45; cursor: not-allowed; pointer-events: none; }
+.opt.disabled { cursor: default; }
+.opt-letter { width: 28px; height: 28px; min-width: 28px; border-radius: 50%; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #555; transition: all .15s; }
+.opt.selected .opt-letter { border-color: #534AB7; background: #534AB7; color: #fff; }
+.opt.correct .opt-letter { border-color: #1D9E75; background: #1D9E75; color: #fff; }
+.opt.wrong-tried .opt-letter { border-color: #E24B4A; background: #E24B4A; color: #fff; }
+.opt-text { font-size: 14px; color: #222; line-height: 1.5; padding-top: 3px; }
+.dropdown-row { font-size: 15px; color: #1a1a2e; margin-bottom: 14px; line-height: 2.2; }
+.dd-select { border: 2px solid #534AB7; border-radius: 8px; padding: 6px 12px; font-size: 14px; font-family: inherit; color: #1a1a2e; background: #fff; cursor: pointer; margin: 0 4px; }
+.feedback { margin-top: 14px; padding: 13px 15px; border-radius: 8px; font-size: 14px; line-height: 1.6; }
+.feedback.correct { background: #EAF3DE; border-left: 4px solid #1D9E75; color: #145a38; }
+.feedback.wrong { background: #FCEBEB; border-left: 4px solid #E24B4A; color: #8B1A1A; }
+.btn-row { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+.btn { padding: 11px 24px; border-radius: 9px; font-weight: 700; font-size: 14px; cursor: pointer; border: none; transition: all .15s; }
+.btn-check { background: #534AB7; color: #fff; }
+.btn-check:disabled { background: #ccc; cursor: not-allowed; }
+.btn-check:not(:disabled):hover { background: #3e369b; }
+.btn-next { background: #1D9E75; color: #fff; }
+.btn-next:hover { background: #158a63; }
+.btn-back { background: none; border: 2px solid #ccc; color: #555; }
+.btn-back:hover { border-color: #999; color: #333; }
+.btn-back.hidden { opacity: 0; pointer-events: none; }
+.results-card { background: #fff; border-radius: 16px; padding: 36px 32px; box-shadow: 0 2px 12px rgba(0,0,0,.08); text-align: center; }
+.score-ring { width: 120px; height: 120px; margin: 0 auto 20px; position: relative; }
+.score-ring svg { transform: rotate(-90deg); }
+.score-pct { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 28px; font-weight: 800; color: #534AB7; }
+.results-title { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
+.results-sub { font-size: 14px; color: #666; margin-bottom: 28px; }
+.skill-table { width: 100%; border-collapse: collapse; text-align: left; margin-bottom: 28px; }
+.skill-table th { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #888; padding: 8px 10px; border-bottom: 2px solid #eee; }
+.skill-table td { padding: 9px 10px; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+.pill-ok { background: #EAF3DE; color: #145a38; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+.pill-no { background: #FCEBEB; color: #8B1A1A; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+.rev-card { background: #fff; border-radius: 14px; padding: 22px; margin-bottom: 16px; box-shadow: 0 1px 6px rgba(0,0,0,.07); }
+.rev-card.ft { border-left: 5px solid #1D9E75; }
+.rev-card.nr { border-left: 5px solid #E24B4A; }
+.rev-label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; font-weight: 800; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px; }
+.rev-q { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 12px; line-height: 1.5; }
+.rev-pass { background: #fafaf9; border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; font-size: 13px; color: #444; line-height: 1.65; }
+.rev-opt { display: flex; gap: 9px; align-items: flex-start; padding: 8px 12px; border-radius: 7px; font-size: 13px; margin-bottom: 5px; }
+.rev-opt.c { background: #EAF3DE; color: #145a38; }
+.rev-opt.w { background: #FCEBEB; color: #8B1A1A; text-decoration: line-through; }
+.rev-opt.n { background: #f7f7f7; color: #444; }
+.rev-exp { margin-top: 12px; padding: 11px 14px; background: #f7f6fe; border-left: 4px solid #534AB7; border-radius: 6px; font-size: 13px; color: #333; line-height: 1.6; }
+.rev-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="avatar">VA</div>
+  <div class="header-info">
+    <div class="header-name">Vivian Ajouz</div>
+    <div class="header-sub">G3.5 Prep · 18 questions · Figurative vs. literal language, Nouns and Pronouns (Grade 3), Commas and Quotation Marks in Dialogue…</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label" id="prog-label">Question 1 of 18</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+</div>
+<div class="main" id="app"></div>
+<script>
+var QS = [
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this</div><div class=\"passage-box\">Mia worked on her math homework for two hours. When she finally finished, she said, \"My brain is on fire!\"</div>",
+    "qHtml": "What does Mia mean when she says, <span class=\"q-ul\">\"My brain is on fire\"</span>?",
+    "tip": "Ask yourself: could this really happen, or is the speaker painting a picture with words? Look at the sentences before to see what is really going on.",
+    "hint": "Mia's brain is not really burning. Think about how your head feels after thinking really hard for a long time.",
+    "opts": [
+      "Her brain feels tired and overworked from thinking so much",
+      "Her brain is actually burning and needs water",
+      "She wants to throw her homework in a fire",
+      "Her head feels cold and frozen"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This is the literal trap — taking the words exactly as they sound. Brains cannot really catch fire; the phrase is figurative and describes a feeling.",
+      "This mixes up the figurative phrase with an action about the homework. The sentence is about how Mia's brain feels, not what she wants to do.",
+      "This is the opposite of what the phrase means. \"On fire\" suggests heat and hard work, not cold."
+    ],
+    "exp": "\"My brain is on fire\" is figurative language — it does not mean a real fire. Mia used this phrase to describe how her brain feels after working hard for two hours. A common Grade 3 mistake is to read phrases like this literally (picturing actual flames) instead of using clues in the sentence to figure out the real meaning.",
+    "skill": "Figurative vs. literal language",
+    "sc": "#993556",
+    "sb": "#FBEAF0",
+    "teks": "L.3.4.D",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 1
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this sentence</div><div class=\"passage-box\">Maya packed her lunch in a blue backpack before she walked to school.</div>",
+    "qHtml": "Which word in the sentence is a <span class=\"q-ul\">pronoun</span>?",
+    "tip": "A pronoun is a word that takes the place of a noun (like a person's name). Look for short words such as he, she, it, we, they, his, her, or its.",
+    "hint": "Find the word that replaces Maya's name so the writer doesn't have to say 'Maya' twice. It shows who owns the backpack.",
+    "opts": [
+      "her",
+      "Maya",
+      "backpack",
+      "school"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "'Maya' is a proper noun (a person's name), not a pronoun. Pronouns replace names — they are not names themselves.",
+      "'Backpack' is a common noun — a thing you can touch. Nouns name people, places, or things; pronouns take their place.",
+      "'School' is a common noun naming a place. Places are nouns, not pronouns."
+    ],
+    "exp": "The answer is 'her.' A pronoun replaces a noun so we don't repeat the same name. Here, 'her' takes the place of 'Maya's' to show whose backpack it is. A common Grade 3 mistake is mixing up nouns (Maya, backpack, school) with pronouns (her, she, it). Remember: nouns NAME, pronouns REPLACE.",
+    "skill": "Nouns and Pronouns (Grade 3)",
+    "sc": "#185FA5",
+    "sb": "#E6F1FB",
+    "teks": "L.3.1.A",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 2
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this sentence</div><div class=\"passage-box\">Maya looked at the puppy and smiled.</div>",
+    "qHtml": "Which sentence shows the correct way to write what Maya said using <span class=\"q-ul\">commas and quotation marks</span> in dialogue?",
+    "tip": "In dialogue, quotation marks go around the exact words spoken, and a comma usually separates the speaker tag from those words. Check that both marks are in the right spots.",
+    "hint": "The comma belongs BEFORE the opening quotation mark when the speaker tag comes first (like 'Maya said,'). End punctuation (like a period or question mark) goes INSIDE the closing quotation mark.",
+    "opts": [
+      "Maya said, \"This puppy is so soft.\"",
+      "Maya said \"This puppy is so soft.\"",
+      "Maya said, \"This puppy is so soft\".",
+      "\"Maya said, This puppy is so soft.\""
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This is missing the comma after the speaker tag 'Maya said.' A comma is needed to separate the speaker tag from the spoken words.",
+      "The period is placed outside the closing quotation mark. In dialogue, end punctuation goes INSIDE the quotation marks, not outside.",
+      "The quotation marks are placed around the speaker tag 'Maya said' instead of only around the words Maya actually spoke. Quotation marks belong only around the exact spoken words.",
+      "Choose the option that follows the dialogue rules."
+    ],
+    "exp": "The correct answer is: Maya said, \"This puppy is so soft.\" In dialogue, you need a comma after the speaker tag (Maya said,), quotation marks around only the exact spoken words (\"This puppy is so soft.\"), and the ending punctuation goes INSIDE the closing quotation mark. This question targets the three most common Grade 3 mistakes with dialogue: forgetting the comma, placing the period outside the quotes, and putting quotation marks in the wrong place.",
+    "skill": "Commas and Quotation Marks in Dialogue",
+    "sc": "#633806",
+    "sb": "#FAEEDA",
+    "teks": "L.3.2.C",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 3
+  },
+  {
+    "type": "std",
+    "passageHtml": null,
+    "qHtml": "Which title is capitalized correctly?",
+    "tip": "In a title, always capitalize the first word, the last word, and all the important words in between. Small words like <em>a</em>, <em>an</em>, <em>the</em>, <em>and</em>, <em>of</em>, and <em>in</em> stay lowercase unless they are first or last.",
+    "hint": "Look at the first word and the last word of each title. Both must start with a capital letter. Then check that small words like <em>the</em> and <em>of</em> in the middle are lowercase.",
+    "opts": [
+      "The Best Day of the Year",
+      "The Best Day Of The Year",
+      "the best day of the year",
+      "The best day of the Year"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This title capitalizes <em>Of</em> and <em>The</em> in the middle. Small words like <em>of</em> and <em>the</em> should stay lowercase when they are inside a title.",
+      "This title does not capitalize the first word or any important words. In a title, the first word and all big words must start with a capital letter.",
+      "This title leaves <em>best</em> and <em>day</em> lowercase. Important words in a title (nouns, verbs, adjectives) must be capitalized, not just the first and last words."
+    ],
+    "exp": "The correct title is <strong>The Best Day of the Year</strong>. The rule (L.3.2.A) says: capitalize the first word, the last word, and all important words in a title. Keep small connecting words like <em>a</em>, <em>an</em>, <em>the</em>, <em>of</em>, <em>and</em>, and <em>in</em> lowercase when they appear in the middle. Here, <em>The</em> is capitalized because it is the first word, <em>Year</em> is capitalized because it is the last word, and <em>Best</em> and <em>Day</em> are capitalized because they are important words. The middle <em>of</em> and <em>the</em> stay lowercase.",
+    "skill": "Capitalize appropriate words in titles",
+    "sc": "#633806",
+    "sb": "#FAEEDA",
+    "teks": "L.3.2.A",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 4
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this sentence</div><div class=\"passage-box\">Maya packed her backpack with a notebook a pencil and a snack for the field trip.</div>",
+    "qHtml": "Which sentence shows the <span class=\"q-ul\">correct</span> use of commas to separate items in a series?",
+    "tip": "When you list three or more things, put a comma after each item except the last one. Try reading the sentence out loud and listen for the small pauses between items.",
+    "hint": "Find every item in the list. You should have a comma between each item, but NOT before the word \"for\" because \"for the field trip\" is not part of the list.",
+    "opts": [
+      "Maya packed her backpack with a notebook, a pencil, and a snack for the field trip.",
+      "Maya packed her backpack with a notebook a pencil, and a snack for the field trip.",
+      "Maya packed her backpack with, a notebook, a pencil, and a snack, for the field trip.",
+      "Maya packed her backpack, with a notebook and a pencil and a snack for the field trip."
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This sentence is missing a comma between the first two items. Every item in a series of three or more needs a comma after it (except the last one).",
+      "Commas should only go between items in the list — not after \"with\" or after \"snack.\" Extra commas break up the sentence in the wrong places.",
+      "This sentence has no commas between the listed items at all. When you list three or more things, you must use commas to separate them, not just the word \"and.\""
+    ],
+    "exp": "When you list three or more items in a sentence, place a comma after each item except the last one: \"a notebook, a pencil, and a snack.\" A common Grade 3 mistake is forgetting the comma before \"and\" (the serial comma) or sprinkling commas in places that aren't between list items. This question targets the exact pattern from standard L.3.2.B — using commas to separate items in a series.",
+    "skill": "Use commas in addresses and to separate items in a series",
+    "sc": "#633806",
+    "sb": "#FAEEDA",
+    "teks": "L.3.2.B",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 5
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this</div><div class=\"passage-box\">My sister and her best friend love art class. Every Tuesday, they paint pictures of animals at the park. Last week, my sister showed me a painting of a deer.</div>",
+    "qHtml": "Which sentence uses the correct verb and pronoun to match the subject?",
+    "tip": "First, find the subject and decide if it is one person or more than one. Then pick a verb and pronoun that match that number.",
+    "hint": "The subject \"My sister and her friend\" is more than one person, so the verb should NOT end in -s, and the pronoun should be \"they,\" not \"she\" or \"it.\"",
+    "opts": [
+      "My sister and her friend bring their paintbrushes when they go to the park.",
+      "My sister and her friend brings their paintbrushes when they go to the park.",
+      "My sister and her friend bring her paintbrushes when she goes to the park.",
+      "My sister and her friend brings its paintbrushes when it goes to the park."
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "The subject \"sister and her friend\" is plural (two people), so the verb should be \"bring,\" not \"brings.\" Plural subjects do not take an -s verb.",
+      "The verb \"bring\" is correct, but the pronouns \"her\" and \"she\" are singular. Since the subject is two people, the pronouns must be \"their\" and \"they.\"",
+      "Two mistakes: \"brings\" is singular (should be \"bring\"), and \"its/it\" is used for things, not for people. The pronouns should be \"their\" and \"they.\""
+    ],
+    "exp": "This question targets the L.3.1.F pattern where a compound subject (two nouns joined by \"and\") must take a plural verb AND a plural pronoun. \"My sister and her friend\" = they (plural), so the verb is \"bring\" (no -s) and the pronoun is \"their.\" A common Grade 3 mistake is adding -s to the verb because the closest noun (\"friend\") sounds singular, or using \"her/she\" because the sentence is about girls. Always match the verb and pronoun to the WHOLE subject, not just the nearest word.",
+    "skill": "Subject-verb and pronoun-antecedent agreement",
+    "sc": "#185FA5",
+    "sb": "#E6F1FB",
+    "teks": "L.3.1.F",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 6
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this sentence</div><div class=\"passage-box\">The two ______ tails wagged happily when their owner came home.</div>",
+    "qHtml": "Which word correctly fills in the blank to show that the tails belong to more than one dog?",
+    "tip": "First, decide if the noun is singular (one) or plural (more than one). For plural nouns that already end in -s, the possessive is formed by adding just an apostrophe after the s.",
+    "hint": "The word 'two' tells you there is more than one dog. When a plural noun ends in -s, you add the apostrophe AFTER the s, not before it.",
+    "opts": [
+      "dogs'",
+      "dog's",
+      "dogs",
+      "dogs's"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This is the singular possessive (one dog's tail). The word 'two' shows there are multiple dogs, so the apostrophe must go after the -s.",
+      "This is just the plural form with no possessive at all. Without an apostrophe, it does not show that the tails belong to the dogs.",
+      "This adds an extra 's after a plural noun that already ends in -s. For regular plural nouns ending in -s, you only add an apostrophe — no extra s."
+    ],
+    "exp": "The correct answer is dogs'. When a plural noun already ends in -s (like 'dogs'), you form the possessive by adding only an apostrophe after the s. This question targets the most common Grade 3 mistake: confusing singular possessive (dog's = one dog) with plural possessive (dogs' = more than one dog). Always check the clue words like 'two' or 'many' to know which form to use.",
+    "skill": "Form and use possessives",
+    "sc": "#633806",
+    "sb": "#FAEEDA",
+    "teks": "L.3.2.D",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 7
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this sentence</div><div class=\"passage-box\">After the long hike, Maya felt so tired that she was unable to finish her dinner before falling asleep on the couch.</div>",
+    "qHtml": "What does the word <span class=\"q-ul\">unable</span> mean in the sentence?",
+    "tip": "Break the word into two parts: the prefix and the base word. Ask yourself what the prefix does to the meaning of the base word.",
+    "hint": "The prefix <b>un-</b> means \"not.\" Add that meaning to the base word <b>able</b> (which means \"can do something\").",
+    "opts": [
+      "Not able to do something",
+      "Able to do something again",
+      "Able to do something very well",
+      "The person who is able"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This would be the meaning if the prefix were <b>re-</b> (meaning \"again\"), but the prefix here is <b>un-</b>, which means \"not.\"",
+      "This confuses a prefix with an intensifier. <b>Un-</b> does not mean \"very\" — it means \"not,\" so <i>unable</i> means the opposite of able.",
+      "This treats <b>-un</b> like the suffix <b>-er</b> (a person who does something). But <b>un-</b> is a prefix at the beginning, and it means \"not.\""
+    ],
+    "exp": "The prefix <b>un-</b> means \"not,\" and the base word <b>able</b> means \"can do something.\" So <b>unable</b> = not able to do something. This question targets the most common Grade 3 mistake on L.3.4.B: forgetting that prefixes change the meaning of the base word. Always split the word: prefix + base = new meaning.",
+    "skill": "Prefixes, suffixes, and base words",
+    "sc": "#993556",
+    "sb": "#FBEAF0",
+    "teks": "L.3.4.B",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 8
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Look at this dictionary page</div><div class=\"passage-box\">The guide words at the top of a dictionary page are <strong>meadow</strong> and <strong>middle</strong>.</div>",
+    "qHtml": "Which word would be found on this dictionary page between the guide words <span class=\"q-ul\">meadow</span> and <span class=\"q-ul\">middle</span>?",
+    "tip": "Guide words show the FIRST and LAST words on a page. A word fits on the page only if it falls alphabetically between them. Compare letter by letter, starting with the first letter.",
+    "hint": "All four words start with 'm', so look at the second letter. The word must come after 'me-' and before 'mi-' (or be between 'mea' and 'mid' alphabetically).",
+    "opts": [
+      "melt",
+      "match",
+      "mother",
+      "middle school"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "'Match' comes BEFORE 'meadow' alphabetically (ma- comes before me-). It would be on an earlier page in the dictionary, not this one.",
+      "'Mother' comes AFTER 'middle' alphabetically (mo- comes after mi-). It would be on a later page in the dictionary, not this one.",
+      "'Middle school' starts the same as the second guide word 'middle,' but words on this page must come BEFORE 'middle.' This word would appear on the next page."
+    ],
+    "exp": "The correct answer is 'melt.' Guide words tell you the first and last entries on a page, so every word on the page falls alphabetically between them. 'Melt' (m-e-l) comes after 'meadow' (m-e-a) and before 'middle' (m-i-d), so it fits. This question targets the common Grade 3 mistake of ignoring the alphabetical range — students often pick a word that looks similar instead of checking whether it actually falls BETWEEN the two guide words.",
+    "skill": "Dictionary and glossary use including guide words",
+    "sc": "#993556",
+    "sb": "#FBEAF0",
+    "teks": "L.3.4.C",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 9
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this</div><div class=\"passage-box\">Maya wrote a story about her trip to the beach. She wasn't sure if she spelled the word <span class=\"q-ul\">beautiful</span> correctly.</div>",
+    "qHtml": "What is the BEST way for Maya to check the spelling of the word <span class=\"q-ul\">beautiful</span>?",
+    "tip": "Think about which tool is designed to show you exactly how a word is spelled, letter by letter.",
+    "hint": "A dictionary is a book (or website) that lists words in alphabetical order and shows the correct spelling of each one.",
+    "opts": [
+      "Look up the word in a dictionary",
+      "Ask a friend how to spell it",
+      "Sound the word out and guess",
+      "Look it up in a thesaurus"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "A friend might spell it wrong too. References like dictionaries are more reliable than guessing or asking others.",
+      "Sounding out works for simple words, but tricky words like 'beautiful' have silent letters and unusual spellings. You need to CHECK with a reference.",
+      "A thesaurus shows synonyms (words with similar meanings), not spellings. Use a dictionary to check spelling."
+    ],
+    "exp": "To check spelling, use a DICTIONARY — it is the reference made for showing correct spellings. A thesaurus is for synonyms, and guessing or asking a friend isn't reliable. This question tests whether you know which reference tool matches the job (L.3.2.G).",
+    "skill": "Consult references to check spelling",
+    "sc": "#633806",
+    "sb": "#FAEEDA",
+    "teks": "L.3.2.G",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 10
+  },
+  {
+    "type": "std",
+    "passageHtml": null,
+    "qHtml": "Which word in the sentence is an <span class=\"q-ul\">abstract noun</span>?<br><br><em>Maya felt great <span class=\"q-ul\">happiness</span> when she hugged her puppy on the porch.</em>",
+    "tip": "An abstract noun names something you cannot see, touch, hear, smell, or taste — like an idea or a feeling. Concrete nouns (puppy, porch) are things you can touch.",
+    "hint": "Two of the choices are things you can touch with your hands. One is a feeling inside you — that one is the abstract noun.",
+    "opts": [
+      "happiness",
+      "puppy",
+      "porch",
+      "hugged"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "A puppy is a concrete noun — you can see it, touch it, and hear it. Abstract nouns name ideas or feelings you cannot touch.",
+      "A porch is a concrete noun — it is a physical place you can stand on and touch. Abstract nouns are not physical objects.",
+      "'Hugged' is not a noun at all — it is a verb showing an action. Abstract nouns name feelings or ideas, not actions."
+    ],
+    "exp": "'Happiness' is an abstract noun because it names a feeling you cannot see or touch. This question targets the most common Grade 3 mistake on L.3.1.C: students pick concrete nouns (puppy, porch) because those words feel like 'normal' nouns, or they pick a verb (hugged) by mistake. Remember the test pattern: abstract nouns are feelings (love, fear, joy), ideas (freedom, honesty), or qualities (bravery, kindness) — never things you can touch.",
+    "skill": "Abstract nouns",
+    "sc": "#185FA5",
+    "sb": "#E6F1FB",
+    "teks": "L.3.1.C",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 11
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this</div><div class=\"passage-box\">Maya wanted to bake cookies with her grandma. She mixed the butter and sugar in a big bowl. _______, she cracked two eggs and stirred them in. Then she added flour and chocolate chips before putting the dough on the tray.</div>",
+    "qHtml": "Which word or phrase best fits in the <span class=\"q-ul\">blank</span> to show the order of what Maya did?",
+    "tip": "Temporal words like <em>first, next, then, after that, finally</em> tell the reader WHEN something happens. Look at what came before and after the blank to figure out where this step belongs in the order.",
+    "hint": "The sentence before the blank shows the very first step (mixing butter and sugar). The blank shows what she did right after that — the second step in the sequence.",
+    "opts": [
+      "Next",
+      "Finally",
+      "Because",
+      "Suddenly"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "\"Finally\" signals the LAST step in a sequence, but cracking eggs is the second step — there are still more steps after it (adding flour and chips).",
+      "\"Because\" shows a cause or reason, not the order of events. It would answer \"why,\" not \"when.\" This is a common mix-up between time words and reason words.",
+      "\"Suddenly\" signals a surprise or quick change, not a normal next step in a recipe. Baking steps happen in a planned order, not by surprise."
+    ],
+    "exp": "The correct answer is <strong>Next</strong>. Standard W.3.3.C is about using temporal words and phrases (like <em>first, next, then, after that, finally</em>) to signal event order in a narrative. Since mixing butter and sugar was the first step and adding flour comes later, \"Next\" correctly shows the second step. The most common Grade 3 mistake is choosing words that show reason (<em>because</em>) or surprise (<em>suddenly</em>) instead of time order, or picking an ending word like <em>finally</em> for a middle step.",
+    "skill": "W.3.3.C",
+    "sc": "#D85A30",
+    "sb": "#FAECE7",
+    "teks": "W.3.3.C",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 12
+  },
+  {
+    "type": "std",
+    "passageHtml": null,
+    "qHtml": "Which word is spelled <span class=\"q-ul\">correctly</span>?",
+    "tip": "When you hear the /j/ sound at the end of a short word, it is usually spelled <b>-dge</b> after a short vowel. After a long vowel or a consonant, use <b>-ge</b>.",
+    "hint": "Listen to the vowel sound in the middle of the word. Is it short (like the 'u' in 'cup') or long? Short vowels need the extra 'd' before 'ge'.",
+    "opts": [
+      "judge",
+      "juge",
+      "jugde",
+      "judje"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This spelling is missing the 'd'. After a short vowel sound (the short /u/), the /j/ sound needs '-dge', not just '-ge'.",
+      "The letters 'd' and 'g' are switched. The correct pattern after a short vowel is '-dge', with the 'd' coming before the 'g'.",
+      "The /j/ sound at the end of a one-syllable word is never spelled 'dje'. The correct spelling pattern is '-dge' after a short vowel.",
+      "This spelling is missing the 'd'. After a short vowel sound (the short /u/), the /j/ sound needs '-dge', not just '-ge'."
+    ],
+    "exp": "The correct spelling is <b>judge</b>. This question tests the Grade 3 spelling generalization that the /j/ sound at the end of a one-syllable word is spelled <b>-dge</b> right after a short vowel (judge, badge, bridge, dodge, fudge). After a long vowel or a consonant, use <b>-ge</b> (cage, large). Knowing this pattern helps you spell many words correctly without guessing.",
+    "skill": "Use spelling patterns and generalizations",
+    "sc": "#633806",
+    "sb": "#FAEEDA",
+    "teks": "L.3.2.F",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 13
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this</div><div class=\"passage-box\">Maya's mom watched her finish her homework. \"You are so <span class=\"q-ul\">determined</span> when you work on math,\" she said with a smile.</div>",
+    "qHtml": "The word <span class=\"q-ul\">determined</span> gives the sentence a feeling that is —",
+    "tip": "Ask yourself: does the speaker want you to feel good, bad, or just okay about Maya? Look at clues like the smile and the kind tone.",
+    "hint": "Mom is smiling and praising Maya. A word used as a compliment has a positive (good) feeling, even if a similar word like \"stubborn\" would sound negative.",
+    "opts": [
+      "positive, because it praises Maya for not giving up",
+      "negative, because it means Maya is being stubborn",
+      "neutral, because it only describes what Maya is doing",
+      "negative, because math is hard for Maya"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This mixes up \"determined\" with its negative cousin \"stubborn.\" Words can have similar meanings but different feelings — \"determined\" is the positive version.",
+      "This misses the feeling clues. Mom is smiling and giving a compliment, so the word carries a positive feeling, not a plain/neutral one.",
+      "This guesses from the topic (math) instead of the word itself. The word \"determined\" is a compliment no matter what subject Maya is working on."
+    ],
+    "exp": "\"Determined\" has a positive connotation — it praises someone for not giving up. The clues (Mom smiling, calling it out as a good trait) signal positive feeling. A common Grade 3 mistake is confusing \"determined\" (positive) with \"stubborn\" (negative), since they have similar meanings but very different feelings. Always check the surrounding clues to decide if a word feels good, bad, or neutral.",
+    "skill": "Word connotations (positive/negative/neutral)",
+    "sc": "#993556",
+    "sb": "#FBEAF0",
+    "teks": "L.3.5.C",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 14
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this opinion</div><div class=\"passage-box\">Recess is the best part of the school day. Kids need time to run and play outside. Playing helps our bodies stay strong and our minds feel happy.</div>",
+    "qHtml": "Which sentence gives the <span class=\"q-ul\">best reason</span> to add to this opinion?",
+    "tip": "A good reason tells WHY the opinion is true. Watch out for sentences that just repeat the opinion or tell a story instead of giving a reason.",
+    "hint": "Look for a sentence that starts with a fact or explains WHY recess is good — not one that just says recess is fun again.",
+    "opts": [
+      "Recess also gives kids a break so they can focus better when they go back to class.",
+      "Recess is so much fun and I love it the most.",
+      "One time at recess, I fell down and scraped my knee on the blacktop.",
+      "My teacher blows a whistle when recess is over."
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This just repeats the opinion with different words ('fun', 'love it'). A reason must explain WHY, not just say the opinion again.",
+      "This is a personal story (a narrative detail), not a reason. Stories about one event don't support an opinion — reasons do.",
+      "This is a true detail about recess, but it doesn't tell why recess is the BEST part of the day. It's off-topic for the opinion."
+    ],
+    "exp": "Standard W.3.1.B asks writers to give REASONS that support their opinion. A reason explains WHY you believe something. Choice A works because it gives a new benefit (helping kids focus) that supports the opinion. The common mistake on this standard is picking a sentence that just restates the opinion ('it's fun!') or tells a personal story instead of giving a real reason.",
+    "skill": "W.3.1.B",
+    "sc": "#0F6E56",
+    "sb": "#E1F5EE",
+    "teks": "W.3.1.B",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 15
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this</div><div class=\"passage-box\">Maya wrote an opinion paragraph. She wrote: \"Dogs make the best pets. ______ they are loyal and playful, they help families feel happy.\"</div>",
+    "qHtml": "Which word or phrase best fills the <span class=\"q-ul\">blank</span> to connect Maya's opinion to her reasons?",
+    "tip": "Look for a linking word that shows WHY the opinion is true. The blank should connect the opinion (dogs are best) to the reasons that support it.",
+    "hint": "\"And,\" \"then,\" and \"but\" do not show a reason. You need a word that tells the reader WHY the opinion is true — like \"because\" or \"since.\"",
+    "opts": [
+      "Because",
+      "And then",
+      "But",
+      "Finally"
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "\"And then\" is a time-order word used for telling story events in sequence. It does not connect an opinion to a reason — it would make this sound like a story, not an opinion.",
+      "\"But\" shows a contrast or an opposite idea. The reasons here SUPPORT the opinion, they don't go against it, so \"but\" does not connect them correctly.",
+      "\"Finally\" is a word that signals the LAST item in a list or end of a sequence. It does not link an opinion to a supporting reason."
+    ],
+    "exp": "The correct answer is \"Because.\" Standard W.3.1.C asks you to use linking words like <em>because, therefore, since, for example</em> to connect an opinion to its reasons. Maya's opinion is \"Dogs make the best pets,\" and her reasons are that they are loyal, playful, and make families happy. \"Because\" links the opinion to the reasons by showing WHY. A common mistake is picking time-order words (\"and then,\" \"finally\") or contrast words (\"but\") — but those don't show reasons.",
+    "skill": "W.3.1.C",
+    "sc": "#0F6E56",
+    "sb": "#E1F5EE",
+    "teks": "W.3.1.C",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 16
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this opinion paragraph</div><div class=\"passage-box\">Every classroom should have a class pet. A class pet teaches kids how to be responsible because students have to feed it and clean its cage. Taking care of an animal also helps kids feel calm and happy during a busy school day. Plus, watching a pet can make learning about science more fun and real.</div>",
+    "qHtml": "Which sentence would be the BEST <span class=\"q-ul\">concluding statement</span> for this opinion paragraph?",
+    "tip": "A good conclusion wraps up the writing by restating the writer's opinion. It should NOT add a brand-new reason or change the topic.",
+    "hint": "Look back at the writer's main opinion in the very first sentence. The conclusion should remind the reader of that same opinion in a new way — not introduce something new like a different animal or a new fact.",
+    "opts": [
+      "For all of these reasons, every classroom would be a better place with a class pet.",
+      "Hamsters are actually nocturnal, which means they sleep during the day.",
+      "My cousin has a dog named Biscuit who can do three different tricks.",
+      "Schools should also let students bring their lunch from home every day."
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This adds a brand-new fact about hamsters that wasn't in the paragraph. A conclusion should wrap up the writer's opinion, not introduce new information.",
+      "This goes off-topic by talking about one specific dog. A conclusion must connect back to the main opinion (class pets in every classroom), not tell a new story.",
+      "This switches to a completely different opinion about lunches. A conclusion has to match the topic of the paragraph, not start a new argument."
+    ],
+    "exp": "Standard W.3.1.D asks you to provide a concluding statement that wraps up an opinion piece. The best conclusion restates the writer's opinion — here, that every classroom should have a class pet — and signals the end with phrases like 'For all of these reasons.' The common mistake on this standard is picking a sentence that adds a new fact, tells a new story, or switches topics. A strong conclusion looks BACK at what was already said; it does not add something NEW.",
+    "skill": "W.3.1.D",
+    "sc": "#0F6E56",
+    "sb": "#E1F5EE",
+    "teks": "W.3.1.D",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 17
+  },
+  {
+    "type": "std",
+    "passageHtml": "<div class=\"passage-label\">Read this</div><div class=\"passage-box\">A student is writing a story about a girl who finds a lost puppy at the park. She needs a beginning that introduces the main character and sets up where the story takes place.</div>",
+    "qHtml": "Which sentence is the <span class=\"q-ul\">best opening</span> for the story?",
+    "tip": "A strong story opening does two jobs at once: it tells the reader WHO the story is about and WHERE or WHEN it is happening. Look for the choice that does both.",
+    "hint": "Cross out any sentence that only describes an action or feeling without telling you the character's name AND where they are.",
+    "opts": [
+      "One sunny Saturday morning, a girl named Mia was walking through Oakwood Park when she heard a soft whimper coming from the bushes.",
+      "She was so happy and surprised!",
+      "The puppy had brown fur and a red collar with a silver tag.",
+      "Then they walked home together and had a snack."
+    ],
+    "ans": 0,
+    "wrongs": [
+      null,
+      "This jumps into a feeling without telling the reader who 'she' is or where the story takes place — the narrator and situation are not established.",
+      "This describes the puppy, but the story is about the girl. It skips introducing the main character and the setting at the very start.",
+      "This is an ending event, not an opening. It belongs later in the event sequence, after the characters and situation are introduced."
+    ],
+    "exp": "Standard W.3.3.A asks writers to establish a situation and introduce a narrator and/or characters at the start of a narrative. Choice A names the character (Mia), gives the setting (Oakwood Park on a Saturday morning), and starts the event sequence (hearing a whimper). The other choices skip the introduction step — a common Grade 3 mistake where writers jump straight into feelings, descriptions, or later events without first telling the reader who and where.",
+    "skill": "W.3.3.A",
+    "sc": "#D85A30",
+    "sb": "#FAECE7",
+    "teks": "W.3.3.A",
+    "mapsTo": "→ G3.5 Prep",
+    "n": 18
+  }
+];
+
+var cur=0, sel=null, ddSel=null, submitted=false;
+var scores=QS.map(function(){return null;});
+var tried=QS.map(function(){return [];});
+var lastWrong=null, hintOn=false, hintOpen=false, STATE='quiz';
+var _saveStatus='';
+var EYE='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+function render(){
+  var a=document.getElementById('app');
+  if(STATE==='quiz') rQuiz(a);
+  else if(STATE==='results') rResults(a);
+  else rReview(a);
+}
+
+function rQuiz(a){
+  var q=QS[cur], t=tried[cur], pct=Math.round((cur/QS.length)*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-label').textContent='Question '+(cur+1)+' of '+QS.length+' · '+q.skill;
+
+  var ph=q.passageHtml||'';
+  var qt='<div class="q-text">'+(q.qHtml||q.q||'')+'</div>';
+  var ih='', fb='';
+
+  if(q.type==='std'){
+    ih=rStd(q,t);
+    if(lastWrong&&!submitted) fb='<div class="feedback wrong">✗ '+lastWrong+'</div>';
+    if(submitted) fb='<div class="feedback correct">✓ '+q.exp+'</div>';
+  } else if(q.type==='dropdown'){
+    ih=rDD(q);
+    if(submitted) fb='<div class="feedback correct">✓ '+q.exp+'</div>';
+    else if(lastWrong) fb='<div class="feedback wrong">✗ '+lastWrong+'</div>';
+  }
+
+  var hb=q.hint?'<button class="hint-btn'+(hintOn?' visible':'')+'" onclick="tHint()">'+EYE+(hintOpen?' Hide hint':' Show hint')+'</button>':'';
+  var hr=q.hint?'<div class="hint-reveal'+(hintOpen?' open':'')+'"><strong>Hint:</strong> '+q.hint+'</div>':'';
+
+  var ok=(q.type==='std')?(sel!==null&&!submitted):(ddSel!==null&&!submitted);
+  var cb=!submitted?'<button class="btn btn-check"'+(ok?'':' disabled')+' onclick="doSub()">Check answer</button>':'';
+  var nb=submitted?'<button class="btn btn-next" onclick="nxt()">Next question →</button>':'';
+  var backCls=cur===0?'btn btn-back hidden':'btn btn-back';
+
+  a.innerHTML=
+    '<div class="badge-row"><span class="skill-badge" style="background:'+q.sb+';color:'+q.sc+'">'+q.skill+'</span><span class="maps-tag">'+q.mapsTo+'</span></div>'+
+    '<div class="q-card">'+ph+qt+
+    '<div class="tip-box"><div class="tip-header"><span class="tip-label">Coaching Tip</span>'+hb+'</div><div class="tip-text">'+q.tip+'</div>'+hr+'</div>'+
+    ih+fb+
+    '<div class="btn-row"><button class="'+backCls+'" onclick="bk()">← Back</button>'+cb+nb+'</div>'+
+    '</div>';
+}
+
+function rStd(q,t){
+  return '<div class="options">'+q.opts.map(function(o,i){
+    var c='opt';
+    if(t.indexOf(i)!==-1) c+=' wrong-tried disabled';
+    else if(submitted&&i===q.ans) c+=' correct disabled';
+    else if(!submitted&&sel===i) c+=' selected';
+    else if(submitted) c+=' disabled';
+    return '<div class="'+c+'" onclick="sO('+i+')"><div class="opt-letter">'+String.fromCharCode(65+i)+'</div><div class="opt-text">'+o+'</div></div>';
+  }).join('')+'</div>';
+}
+
+function rDD(q){
+  var opts=q.dropOptions.map(function(x,i){
+    return '<option value="'+i+'"'+(ddSel===i?' selected':'')+'>'+x+'</option>';
+  }).join('');
+  var sel2=submitted
+    ?'<select class="dd-select" disabled><option>'+q.dropOptions[q.ans]+'</option></select>'
+    :'<select class="dd-select" onchange="sDD(this.value)"><option value="">— choose —</option>'+opts+'</select>';
+  return '<div class="dropdown-row">'+(q.dropBefore||'')+' '+sel2+' '+(q.dropAfter||'')+'</div>';
+}
+
+function sO(i){ if(submitted||tried[cur].indexOf(i)!==-1)return; sel=i; lastWrong=null; render(); }
+function sDD(v){ ddSel=v===''?null:parseInt(v); lastWrong=null; render(); }
+function tHint(){ if(!hintOn)return; hintOpen=!hintOpen; render(); }
+
+function doSub(){
+  if(submitted)return;
+  var q=QS[cur];
+  if(q.type==='std'){
+    if(sel===null)return;
+    if(sel===q.ans){ submitted=true; scores[cur]=tried[cur].length===0; lastWrong=null; }
+    else{ tried[cur].push(sel); hintOn=true; lastWrong=q.wrongs[sel]||"Not quite — use the hint for more guidance."; sel=null; }
+  } else if(q.type==='dropdown'){
+    if(ddSel===null)return;
+    if(ddSel===q.ans){ submitted=true; scores[cur]=tried[cur].length===0; lastWrong=null; }
+    else{ tried[cur].push(ddSel); hintOn=true; lastWrong="That word doesn't match the direction or meaning of the original. Use the hint."; ddSel=null; }
+  }
+  render();
+}
+
+function nxt(){
+  if(cur<QS.length-1){
+    cur++; sel=null; ddSel=null; submitted=false; lastWrong=null; hintOn=false; hintOpen=false; render();
+  } else {
+    STATE='results';
+    document.getElementById('prog-fill').style.width='100%';
+    document.getElementById('prog-label').textContent='Complete!';
+    var _ft=scores.filter(function(s){return s===true;}).length;
+    var _pct=Math.round(_ft/QS.length*100);
+    try{localStorage.setItem('doom_score_vivian_ajouz',JSON.stringify({student:'Vivian Ajouz',grade:3,score:_pct,first_try:_ft,total:QS.length,ts:new Date().toISOString(),synced:false}));}catch(e){}
+    _saveStatus='pending';
+    render();
+    fetch('http://localhost:8421/score',{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({student:'Vivian Ajouz',grade:3,score:_pct,first_try:_ft,total:QS.length})})
+    .then(function(){
+      _saveStatus='ok';
+      try{var d=JSON.parse(localStorage.getItem('doom_score_vivian_ajouz')||'{}');d.synced=true;localStorage.setItem('doom_score_vivian_ajouz',JSON.stringify(d));}catch(e){}
+      var el=document.getElementById('score-save-status');
+      if(el) el.innerHTML='<span style="color:#1D9E75;font-weight:600">&#10003; Score saved</span>';
+    })
+    .catch(function(){
+      _saveStatus='fail';
+      var el=document.getElementById('score-save-status');
+      if(el) el.innerHTML='<span style="color:#E24B4A;font-weight:600">&#9888; Server offline — tell your teacher: <strong>'+_pct+'%</strong></span>';
+    });
+  }
+}
+
+function bk(){
+  if(cur===0)return;
+  cur--; sel=null; ddSel=null;
+  submitted=scores[cur]!==null;
+  lastWrong=null; hintOn=false; hintOpen=false;
+  render();
+}
+
+function rResults(a){
+  var ft=scores.filter(function(s){return s===true;}).length, tot=QS.length, pct=Math.round((ft/tot)*100);
+  var sm={};
+  QS.forEach(function(q,i){
+    if(!sm[q.skill]) sm[q.skill]={tot:0,ok:0};
+    sm[q.skill].tot++;
+    if(scores[i]===true) sm[q.skill].ok++;
+  });
+  var rows=Object.keys(sm).map(function(sk){
+    var d=sm[sk], ok=d.ok===d.tot;
+    return '<tr><td>'+sk+'</td><td>'+d.ok+' / '+d.tot+'</td><td><span class="'+(ok?'pill-ok':'pill-no')+'">'+(ok?'✓ Mastered':'⚠ Review')+'</span></td></tr>';
+  }).join('');
+  var r=52, c=2*Math.PI*r, d=(pct/100)*c;
+  var _st=_saveStatus==='ok'?'<span style="color:#1D9E75;font-weight:600">&#10003; Score saved</span>':_saveStatus==='fail'?'<span style="color:#E24B4A;font-weight:600">&#9888; Server offline &#8212; tell your teacher: <strong>'+pct+'%</strong></span>':_saveStatus==='pending'?'<span style="color:#888">Saving score&#8230;</span>':'';
+  a.innerHTML='<div class="results-card">'+
+    '<div class="score-ring"><svg width="120" height="120" viewBox="0 0 120 120">'+
+    '<circle cx="60" cy="60" r="'+r+'" fill="none" stroke="#e5e3f7" stroke-width="12"/>'+
+    '<circle cx="60" cy="60" r="'+r+'" fill="none" stroke="#534AB7" stroke-width="12" stroke-dasharray="'+d.toFixed(1)+' '+c.toFixed(1)+'" stroke-linecap="round"/>'+
+    '</svg><div class="score-pct">'+pct+'%</div></div>'+
+    '<div class="results-title">Practice Complete!</div>'+
+    '<div class="results-sub">'+ft+' of '+tot+' first-try correct · Targeted for G3.5</div>'+
+    '<table class="skill-table"><thead><tr><th>Skill</th><th>Score</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<button class="btn" style="background:#f0eefd;color:#534AB7;border:2px solid #534AB7;margin-right:8px" onclick="goReview()">Review all answers</button>'+
+    '<button class="btn" style="background:#534AB7;color:#fff" onclick="restart()">Practice again</button>'+
+    '<div id="score-save-status" style="margin-top:14px;font-size:13px;min-height:20px">'+_st+'</div>'+
+    '</div>';
+}
+
+function restart(){
+  cur=0; sel=null; ddSel=null; submitted=false;
+  scores=QS.map(function(){return null;});
+  tried=QS.map(function(){return [];});
+  lastWrong=null; hintOn=false; hintOpen=false; STATE='quiz'; _saveStatus='';
+  document.getElementById('prog-fill').style.width='0%';
+  render();
+}
+
+function goResults(){ STATE='results'; render(); }
+function goReview(){ STATE='review'; render(); }
+
+function rReview(a){
+  var html='<div class="rev-top">'+
+    '<button class="btn" style="background:#f0eefd;color:#534AB7;border:2px solid #534AB7" onclick="goResults()">← Back to results</button>'+
+    '<button class="btn" style="background:#534AB7;color:#fff" onclick="restart()">Practice again</button>'+
+    '</div>';
+  QS.forEach(function(q,i){
+    var ft=scores[i]===true, t=tried[i], att=t.length+1;
+    var lbl=ft?'✓ First try':'✗ Needed '+att+' attempt'+(att>1?'s':'');
+    var cls='rev-card '+(ft?'ft':'nr');
+    var ph=q.passageHtml?q.passageHtml.replace('passage-box','rev-pass'):'';
+    var qt=q.qHtml||q.q||'';
+    var arr=q.type==='dropdown'?q.dropOptions:q.opts;
+    var oh=arr.map(function(x,j){
+      var oc='rev-opt '+(j===q.ans?'c':t.indexOf(j)!==-1?'w':'n');
+      return '<div class="'+oc+'"><strong>'+String.fromCharCode(65+j)+'.</strong> '+x+'</div>';
+    }).join('');
+    html+='<div class="'+cls+'">'+
+      '<div class="rev-label">'+
+        '<span style="color:'+q.sc+'">'+q.skill+' · '+q.teks+' · '+q.mapsTo+'</span>'+
+        '<span style="color:'+(ft?'#145a38':'#8B1A1A')+'">'+lbl+'</span>'+
+      '</div>'+
+      ph+'<div class="rev-q">'+qt+'</div>'+oh+
+      '<div class="rev-exp"><strong>Why:</strong> '+q.exp+'</div>'+
+    '</div>';
+  });
+  a.innerHTML=html;
+}
+
+render();
+</script>
+</body>
+</html>
